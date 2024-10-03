@@ -8,8 +8,20 @@ const app = express(); //it will create the instance of express.,important line 
 
 // it is called request handlers
 
-app.use("/home", (req, res) => {
-  res.send("p ");
+// app.use("/home", (req, res) => {
+//   res.send("p ");
+// });
+
+app.get("/home", (req, res) => {
+  res.send("Home Sweet Home");
+});
+
+app.post("/home", (req, res) => {
+  res.send("successfully sent data in DB");
+});
+
+app.delete("/home", (req, res) => {
+  res.send("HiHiHiHi");
 });
 
 app.listen(7777, () => {
