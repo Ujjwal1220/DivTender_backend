@@ -1,30 +1,21 @@
 const express = require("express");
+const { auth } = require("./Middleware"); // Import the auth middleware
 
-const app = express(); //it will create the instance of express.,important line .
+const app = express();
 
-app.use(
-  "/user",
-  (req, res, next) => {
-    console.log("1st response");
-    // res.send("1st Response");
-    next();
-  },
-  (req, res, next) => {
-    console.log("2nd response");
-    // res.send("2nd response");
-    next();
-  },
-  (req, res, next) => {
-    console.log("3rd response");
-    // res.send("3rd response");
-    next();
-  },
-  (req, res, next) => {
-    console.log("4th response");
-    res.send("4th response");
-  }
-);
+// Apply the auth middleware to all /admin routes
+// app.use("/admin", auth);
 
+// Protected routes under /admin
+app.get("/admin/getAllData", auth, (req, res) => {
+  res.send("All Data Sent");
+});
+
+app.delete("/admin/deleteUser", (req, res) => {
+  res.send("All data deleted");
+});
+
+// Start the server on port 7777
 app.listen(7777, () => {
-  console.log("Hey!");
-}); // it can also take callback function.
+  console.log("Hey! Server is running on port 7777");
+});
