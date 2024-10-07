@@ -1,1 +1,0 @@
-mongodb+srv://Practice:pFEKHZ6tIMDBlumQ@practice.pjx3b.mongodb.net/
