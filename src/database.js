@@ -6,10 +6,6 @@ const connectdb = async () => {
   );
 };
 
-connectdb()
-  .then(() => {
-    console.log("connected successfully");
-  })
-  .catch((err) => {
-    console.error("disconnected");
-  });
+module.exports = {
+  connectdb,
+};
