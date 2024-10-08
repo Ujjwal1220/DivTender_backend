@@ -6,6 +6,8 @@ const User = require("./models/user");
 
 //create the instance of user using new keyword under an api, (like we are making instance of class in OOPS);
 app.use(express.json()); // it will convert json to js object.
+
+// post all the data to database
 app.post("/signup", async (req, res) => {
   // console.log(req.body);
   const userobj = new User(req.body);
@@ -14,6 +16,21 @@ app.post("/signup", async (req, res) => {
     res.send("data added suceesfully");
   } catch (err) {
     res.status(500).send("Something Went Wrong");
+  }
+});
+
+app.get("/feed", async (req, res) => {
+  const useremail = req.body.Email;
+
+  try {
+    const resu = await User.find({ Email: useremail });
+    if (resu != 0) {
+      res.send(resu);
+    } else {
+      res.send("user not found");
+    }
+  } catch (err) {
+    res.status(400).send("Something went wrong");
   }
 });
 
