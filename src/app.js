@@ -9,7 +9,6 @@ app.use(express.json()); // it will convert json to js object.
 
 // post all the data to database
 app.post("/signup", async (req, res) => {
-  // console.log(req.body);
   const userobj = new User(req.body);
   try {
     await userobj.save();
@@ -31,6 +30,38 @@ app.get("/feed", async (req, res) => {
     }
   } catch (err) {
     res.status(400).send("Something went wrong");
+  }
+});
+
+app.get("/getbyID", async (req, res) => {
+  try {
+    const resu = await User.findById("6704a4c4d756554351dfc4b9");
+    res.send(resu);
+  } catch (err) {
+    res.send("Something went wrong");
+  }
+});
+
+app.delete("/remove", async (req, res) => {
+  const userid = req.body.userid;
+  try {
+    const rese = await User.findOneAndDelete(userid);
+    res.send(rese);
+  } catch (err) {
+    res.send("something went wrong");
+  }
+});
+
+app.patch("/update", async (req, res) => {
+  const userid = req.body.userid;
+  const data = req.body;
+  try {
+    const rest = await User.findByIdAndUpdate({ _id: userid }, data, {
+      runValidators: true,
+    });
+    res.send(rest);
+  } catch (err) {
+    res.send("Something went wrong");
   }
 });
 
