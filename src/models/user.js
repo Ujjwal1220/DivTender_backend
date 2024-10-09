@@ -29,36 +29,36 @@ const UserSchema = new mongoose.Schema(
       type: String,
       // required: true,
     },
-    // Age: {
-    //   type: Number,
-    //   min: 18,
-    // },
+    Age: {
+      type: Number,
+      min: 18,
+    },
 
-    // gender: {
-    //   type: String,
-    //   validate(value) {
-    //     if (!["male", "female", "others"].includes(value)) {
-    //       throw new Error("Gender data is not valid");
-    //     }
-    //   },
-    // },
+    gender: {
+      type: String,
+      validate(value) {
+        if (!["male", "female", "others"].includes(value)) {
+          throw new Error("Gender data is not valid");
+        }
+      },
+    },
 
-    // PhoneNo: {
-    //   type: Number,
-    //   min: 10,
-    //   max: 10,
-    // },
-    // photourl: {
-    //   type: String,
-    //   url: "hey",
-    // },
-    // about: {
-    //   type: String,
-    //   default: "[javascript,cricket,song]",
-    // },
-    // skills: {
-    //   type: [String],
-    // },
+    PhoneNo: {
+      type: Number,
+      min: 10,
+      max: 10,
+    },
+    photourl: {
+      type: String,
+      url: "hey",
+    },
+    about: {
+      type: String,
+      default: "[javascript,cricket,song]",
+    },
+    skills: {
+      type: [String],
+    },
   },
   {
     timestamps: true,
