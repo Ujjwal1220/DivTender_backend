@@ -3,6 +3,7 @@ const authrouter = express.Router();
 const { validationsignup } = require("../utilis/validation");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
 authrouter.post("/signup", async (req, res) => {
   try {
