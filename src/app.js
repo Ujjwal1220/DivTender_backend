@@ -9,6 +9,7 @@ const { validationsignup } = require("./utilis/validation");
 const { authrouter } = require("./route/auth");
 const { profilerouter } = require("./route/profile");
 const { requestrouter } = require("./route/request");
+const userrouter = require("./route/userdetail");
 
 app.use(express.json());
 app.use(cookieparser());
@@ -16,6 +17,7 @@ app.use(cookieparser());
 app.use("/", authrouter);
 app.use("/", profilerouter);
 app.use("/", requestrouter);
+app.use("/", userrouter);
 
 app.get("/feed", async (req, res) => {
   const useremail = req.body.Email;
