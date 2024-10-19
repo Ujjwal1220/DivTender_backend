@@ -10,9 +10,16 @@ const { authrouter } = require("./route/auth");
 const { profilerouter } = require("./route/profile");
 const { requestrouter } = require("./route/request");
 const userrouter = require("./route/userdetail");
+const cors = require("cors");
 
 app.use(express.json());
 app.use(cookieparser());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 app.use("/", authrouter);
 app.use("/", profilerouter);

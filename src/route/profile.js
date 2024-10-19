@@ -20,10 +20,13 @@ profilerouter.patch("/profile/edit", authentication, async (req, res) => {
       throw new Error("Invalid field");
     }
     const loggedinuser = req.user;
-    Object.keys(req.body.forEach((key) => (loggedinuser[key] = req.body[key])));
-    loggedinuser.save();
+    Object.keys(req.body).forEach((key) => {
+      loggedinuser[key] = req.body[key];
+    });
+    await loggedinuser.save();
+
+    res.send(loggedinuser);
   } catch (err) {
-    // Send the actual error message
     res.status(400).send(`ERROR: ${err.message}`);
   }
 });

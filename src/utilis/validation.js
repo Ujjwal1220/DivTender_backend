@@ -13,11 +13,12 @@ const validationsignup = (req) => {
 };
 
 const validateeditprofiledata = (req) => {
-  const editdata = ["FirstName", "LastName", "Age", "Email"];
+  const editdata = ["FirstName", "LastName", "Age", "gender", "photourl"];
+  // Check if all fields in the request body are allowed for editing
   const iseditallowed = Object.keys(req.body).every((field) =>
     editdata.includes(field)
   );
-  res.send(iseditallowed);
+  return iseditallowed; // Return true if valid, false otherwise
 };
 
 module.exports = {

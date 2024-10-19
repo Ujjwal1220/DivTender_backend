@@ -6,14 +6,17 @@ const ConnectionRequest = require("../models/connectionrequest");
 
 userrouter.get("/user/request/received", authentication, async (req, res) => {
   try {
-    const loggin = req.user;
+    const loggedinUser = req.user;
+
+    // Fetch connection requests where the logged-in user is the recipient (toUserId)
     const access = await ConnectionRequest.find({
-      _id: loggin._id,
+      toUserId: loggedinUser._id,
       status: "interested",
-    }).populate("fromUserId", ["FirstName , LastName"]);
+    }).populate("fromUserId", ["FirstName", "LastName", "gender", "photourl"]);
+
     res.json({ message: "ok", data: access });
   } catch (err) {
-    res.status(400).send("Check again request api , something went wrong");
+    res.status(400).send("Check again request API, something went wrong");
   }
 });
 
@@ -27,8 +30,8 @@ userrouter.get("/user/connections", authentication, async (req, res) => {
         { toUserId: loginuser._id, status: "accepted" },
       ],
     })
-      .populate("fromUserId", ["FirstName", "LastName"])
-      .populate("toUserId", ["FirstName", "LastName"]);
+      .populate("fromUserId", ["FirstName", "LastName", "photourl", "gender"])
+      .populate("toUserId", ["FirstName", "LastName", "photourl", "gender"]);
 
     const data = seeconnection.map((key) => {
       if (key.fromUserId._id.toString() === loginuser._id.toString()) {
@@ -46,37 +49,46 @@ userrouter.get("/user/connections", authentication, async (req, res) => {
 });
 
 userrouter.get("/feed", authentication, async (req, res) => {
-  const login = req.user;
+  try {
+    const login = req.user;
 
-  const page = parseInt(req.query.page) || 1;
-  let limit = parseInt(req.query.limit) || 10;
-  limit = limit > 50 ? 50 : limit;
-  const skip = (page - 1) * limit;
+    // Pagination setup
+    const page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 10;
+    limit = limit > 50 ? 50 : limit; // Maximum limit of 50
+    const skip = (page - 1) * limit;
 
-  const findconnection = await ConnectionRequest.find({
-    $or: [{ toUserId: login._id }, { fromUserId: login._id }],
-  }).select("fromUserId toUserId");
+    // Fetch connection requests
+    const findconnection = await ConnectionRequest.find({
+      $or: [{ toUserId: login._id }, { fromUserId: login._id }],
+    }).select("fromUserId toUserId");
 
-  const mutualfriend = new Set();
-  findconnection.forEach((req) => {
-    mutualfriend.add(req.fromUserId.toString());
-    mutualfriend.add(req.toUserId.toString());
-  });
+    // Create a set of connected users (mutual friends)
+    const mutualfriend = new Set();
+    findconnection.forEach((req) => {
+      mutualfriend.add(req.fromUserId.toString());
+      mutualfriend.add(req.toUserId.toString());
+    });
 
-  const users = await User.find({
-    $and: [
-      { _id: { $nin: Array.from(mutualfriend) } }, //notin=nin.
-      { _id: { $ne: login._id } }, //ne=not equal.
-    ],
-  })
-    .select("FirstName LastName")
-    .skip(skip)
-    .limit(limit);
+    // Find users not connected to the logged-in user
+    const users = await User.find({
+      $and: [
+        { _id: { $nin: Array.from(mutualfriend) } }, // Exclude connected users
+        { _id: { $ne: login._id } }, // Exclude the logged-in user
+      ],
+    })
+      .select("FirstName LastName photourl gender") // Select required fields
+      .skip(skip)
+      .limit(limit);
 
-  res.json([
-    {
+    // Send response
+    res.json({
+      message: "Users fetched successfully",
       data: users,
-    },
-  ]);
+    });
+  } catch (err) {
+    res.status(500).send("An error occurred: " + err.message);
+  }
 });
+
 module.exports = userrouter;

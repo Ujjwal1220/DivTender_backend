@@ -3,6 +3,7 @@ const requestrouter = express.Router();
 const { authentication } = require("../middlewares/Middleware");
 const ConnectionRequest = require("../models/connectionrequest");
 const User = require("../models/user");
+
 requestrouter.post(
   "/sendconnectionrequest/:status/:touserid",
   authentication,
@@ -34,10 +35,18 @@ requestrouter.post(
           .send({ message: "Connection Request Already Exists!!" });
       }
 
+      // Fetch the user information (photourl and gender) from the database
+      const fromUser = await User.findById(fromUserId);
+      if (!fromUser) {
+        throw new Error("User not found");
+      }
+
       const connectionRequest = new ConnectionRequest({
         fromUserId,
         toUserId,
         status,
+        photourl: fromUser.photourl, // use fromUser's photourl
+        gender: fromUser.gender, // use fromUser's gender
       });
 
       const result = await connectionRequest.save();
@@ -50,6 +59,7 @@ requestrouter.post(
     }
   }
 );
+
 requestrouter.post(
   "/request/review/:status/:requestId",
   authentication,

@@ -19,10 +19,14 @@ authrouter.post("/signup", async (req, res) => {
       Email,
       password: passwordHash,
     });
-    await userdata.save();
-    res.send("data added suceesfully");
+    const savedUser = await userdata.save();
+    const token = await savedUser.getJWT();
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 8 * 360000),
+    });
+    res.json({ message: "User Added successfully !", data: savedUser });
   } catch (err) {
-    res.status(500).send("Something Went Wrong");
+    res.status(400).send("Something Went Wrong" + err.message);
   }
 });
 
@@ -46,7 +50,7 @@ authrouter.post("/login", async (req, res) => {
       console.log(token);
       res.cookie("token", token);
 
-      res.send("Login Successful!!!");
+      res.send(valid);
     } else {
       throw new Error("Password is not correct");
     }
