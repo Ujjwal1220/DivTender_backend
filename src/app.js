@@ -72,9 +72,7 @@ app.patch("/update", async (req, res) => {
     res.send("Something went wrong");
   }
 });
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+
 connectdb()
   .then(() => {
     console.log("connected successfully");
